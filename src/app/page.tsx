@@ -11,7 +11,6 @@ import {
   ChevronDown,
   MapPin,
   Clock,
-  Bike,
 } from "lucide-react";
 import { InstagramIcon as BaseTiktokIcon } from "lucide-react";
 import { FaInstagram, FaWhatsapp, FaSnapchatGhost } from "react-icons/fa";
