@@ -129,6 +129,7 @@ function getInitials(name: string): string {
 
 export default function Home() {
   const [activeVendor, setActiveVendor] = useState<number | null>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-[#f7f1ee] ">
@@ -157,11 +158,39 @@ export default function Home() {
 
           <motion.button
             whileTap={{ scale: 0.95 }}
-            className="md:hidden text-purple-600"
+            className="md:hidden text-[#5a3e2b]"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
-            <ChevronDown size={24} />
+            <ChevronDown
+              size={24}
+              className={`transition-transform ${
+                isMobileMenuOpen ? "rotate-180" : ""
+              }`}
+            />
           </motion.button>
         </div>
+
+        {/* Mobile Menu */}
+        <motion.div
+          initial={false}
+          animate={{ height: isMobileMenuOpen ? "auto" : 0 }}
+          className="md:hidden overflow-hidden bg-white"
+        >
+          <nav className="container mx-auto px-4 py-4 flex flex-col gap-4">
+            <NavLink href="#vendors" onClick={() => setIsMobileMenuOpen(false)}>
+              Vendors
+            </NavLink>
+            <NavLink
+              href="#delivery"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Delivery
+            </NavLink>
+            <NavLink href="#contact" onClick={() => setIsMobileMenuOpen(false)}>
+              Contact
+            </NavLink>
+          </nav>
+        </motion.div>
       </header>
 
       {/* Hero Section */}
@@ -174,11 +203,11 @@ export default function Home() {
             className="flex-1"
           >
             <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight">
-              <span className="bg-[#986d47] text-transparent bg-clip-text text-5xl md:text-8xl">
+              <span className="bg-[#986d47] text-transparent bg-clip-text text-5xl md:text-8xl font-baloo">
                 Boba Delivered
               </span>
               <br />
-              To Your Door
+              <span className="font-baloo">To Your Door</span>
             </h1>
             <p className="text-base md:text-lg text-gray-600 mb-6">
               Get your favorite boba drinks from the best vendors in town,
@@ -249,7 +278,7 @@ export default function Home() {
       </section>
 
       {/* Delivery Times Section */}
-      <section id="delivery" className="bg-white py-12 md:py-16">
+      <section id="delivery" className="bg-[#f7f1ee] py-12 md:py-16">
         <div className="container mx-auto px-4">
           <SectionTitle>Delivery Times</SectionTitle>
 
@@ -258,20 +287,20 @@ export default function Home() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7 }}
-            className="mt-8 bg-[#f7f1ee] rounded-2xl p-8 shadow-lg"
+            className="mt-8 bg-white rounded-2xl p-8 shadow-lg"
           >
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {deliveryTimes.map((time, index) => (
                 <motion.div
                   key={index}
-                  whileHover={{ y: -5 }}
-                  className="bg-white rounded-xl p-6 shadow-md flex flex-col items-center"
+                  whileHover={{ y: -5, scale: 1.02 }}
+                  className="bg-gradient-to-br from-[#f7f1ee] to-white rounded-xl p-6 shadow-md flex flex-col items-center border border-[#e6d5c7]"
                 >
-                  <div className="w-12 h-12 bg-[#f7f1ee] rounded-full flex items-center justify-center mb-4">
-                    <Clock className="text-[#5a3e2b]" size={24} />
+                  <div className="w-16 h-16 bg-[#5a3e2b] rounded-full flex items-center justify-center mb-4">
+                    <Clock className="text-white" size={28} />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-800">{time}</h3>
-                  <p className="text-gray-500 text-center mt-2">
+                  <h3 className="text-2xl font-bold text-[#5a3e2b]">{time}</h3>
+                  <p className="text-[#986d47] text-center mt-2 font-medium">
                     {index === 0
                       ? "Morning Delivery"
                       : index === 1
@@ -282,13 +311,21 @@ export default function Home() {
               ))}
             </div>
 
-            <div className="mt-8 bg-[#986d47] rounded-xl p-4  ">
-              <p className="text-center text-white">
-                <span className="font-medium">Note:</span> Order at least 1 hour
-                before your chosen time to avoid being moved to the next
-                delivery slot.
-              </p>
-            </div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="mt-8 bg-gradient-to-r from-[#5a3e2b] to-[#986d47] rounded-xl p-6 shadow-lg"
+            >
+              <div className="flex items-center justify-center gap-3">
+                <Clock className="text-white" size={24} />
+                <p className="text-center text-white text-lg">
+                  <span className="font-bold">Pro Tip:</span> Order at least 1
+                  hour before your chosen time to ensure timely delivery
+                </p>
+              </div>
+            </motion.div>
           </motion.div>
         </div>
       </section>
@@ -303,7 +340,7 @@ export default function Home() {
             questions!
           </p>
 
-          <div className="flex justify-center gap-6">
+          <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6 w-full max-w-md mx-auto">
             <SocialButton
               icon={<FaInstagram size={24} />}
               color="bg-[#5a3e2b]"
@@ -370,7 +407,7 @@ export default function Home() {
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
     <div className="text-center mb-4">
-      <h2 className="text-3xl md:text-4xl font-bold">{children}</h2>
+      <h2 className="text-3xl md:text-4xl font-baloo font-bold">{children}</h2>
       <div className="w-24 h-1 bg-[#986d47] mx-auto mt-4 rounded-full"></div>
     </div>
   );
@@ -380,15 +417,18 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 function NavLink({
   href,
   children,
+  onClick,
 }: {
   href: string;
   children: React.ReactNode;
+  onClick?: () => void;
 }) {
   return (
     <motion.a
       href={href}
       whileHover={{ y: -2 }}
       className="font-medium text-gray-700 hover:text-purple-600 transition-colors"
+      onClick={onClick}
     >
       {children}
     </motion.a>
@@ -481,10 +521,10 @@ function SocialButton({
       href={href}
       whileHover={{ y: -5 }}
       whileTap={{ scale: 0.95 }}
-      className={`${color} text-white px-5 py-3 rounded-full flex items-center gap-2 shadow-lg`}
+      className={`${color} text-white px-5 py-3 rounded-full flex items-center justify-center gap-2 shadow-lg w-full sm:w-auto`}
     >
       {icon}
-      <span>{children}</span>
+      <span className="whitespace-nowrap">{children}</span>
     </motion.a>
   );
 }
