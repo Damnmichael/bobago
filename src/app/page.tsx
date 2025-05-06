@@ -207,7 +207,7 @@ export default function Home() {
                 Boba Delivered
               </span>
               <br />
-              <span className="font-baloo">To Your Door</span>
+              <span className="font-baloo text-[#5a3e2b]">To Your Door</span>
             </h1>
             <p className="text-base md:text-lg text-gray-600 mb-6">
               Get your favorite boba drinks from the best vendors in town,
@@ -407,7 +407,9 @@ export default function Home() {
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
     <div className="text-center mb-4">
-      <h2 className="text-3xl md:text-4xl font-baloo font-bold">{children}</h2>
+      <h2 className="text-3xl md:text-4xl font-baloo font-bold text-[#5a3e2b]">
+        {children}
+      </h2>
       <div className="w-24 h-1 bg-[#986d47] mx-auto mt-4 rounded-full"></div>
     </div>
   );
@@ -462,7 +464,7 @@ function VendorCard({
       </div>
 
       <div className="p-5">
-        <h3 className="text-xl font-bold mb-1">{vendor.name}</h3>
+        <h3 className="text-xl font-bold mb-1 text-[#5a3e2b]">{vendor.name}</h3>
         <p className="text-gray-600 text-sm mb-3">{vendor.description}</p>
 
         <div
@@ -490,7 +492,7 @@ function VendorCard({
                     {location.name}
                   </div>
                   <div
-                    className={`px-2 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r ${vendor.gradient} text-black`}
+                    className={`px-2 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r ${vendor.gradient} text-[#5a3e2b]`}
                   >
                     ₵{location.price}
                   </div>
