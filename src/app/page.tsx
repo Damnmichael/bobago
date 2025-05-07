@@ -5,13 +5,7 @@ import type React from "react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import {
-  Instagram,
-  PhoneIcon as WhatsApp,
-  ChevronDown,
-  MapPin,
-  Clock,
-} from "lucide-react";
+import { ChevronDown, MapPin, Clock } from "lucide-react";
 import { InstagramIcon as BaseTiktokIcon } from "lucide-react";
 import { FaInstagram, FaWhatsapp, FaSnapchatGhost } from "react-icons/fa";
 
@@ -563,6 +557,3 @@ function SocialButton({
 }
 
 // TikTok icon component
-function TiktokIcon(props: { size: number }) {
-  return <BaseTiktokIcon width={props.size} height={props.size} />;
-}
