@@ -157,7 +157,7 @@ export default function Home() {
                   Grand Opening Special! 🎉
                 </h3>
                 <p className="text-sm md:text-lg mb-6">
-                  Starting March 25th, enjoy flat rate delivery of ₵20 to all
+                  Starting June 1st, enjoy flat rate delivery of ₵20 to all
                   locations for the first 2 days!
                 </p>
                 <motion.button
