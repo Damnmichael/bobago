@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { ChevronDown, MapPin, Clock } from "lucide-react";
-import { InstagramIcon as BaseTiktokIcon } from "lucide-react";
+
 import { FaInstagram, FaWhatsapp, FaSnapchatGhost } from "react-icons/fa";
 
 // Dummy data for vendors
@@ -555,5 +555,3 @@ function SocialButton({
     </motion.a>
   );
 }
-
-// TikTok icon component
