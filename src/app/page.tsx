@@ -394,14 +394,20 @@ export default function Home() {
             >
               @bobagodelivery
             </SocialButton>
-            <SocialButton icon={<FaWhatsapp size={24} />} color="bg-[#5a3e2b]">
-              +233 54 394 0135
-            </SocialButton>
+
             <SocialButton
               icon={<FaSnapchatGhost size={24} />}
               color="bg-[#5a3e2b]"
+              href="https://snapchat.com/add/bobagodelivery"
             >
               @bobagodelivery
+            </SocialButton>
+            <SocialButton
+              icon={<FaWhatsapp size={24} />}
+              color="bg-[#5a3e2b]"
+              href="https://wa.me/233543940135"
+            >
+              +233 54 394 0135
             </SocialButton>
           </div>
         </div>
@@ -416,27 +422,6 @@ export default function Home() {
               <p className="text-white text-sm mt-1">
                 Delivering happiness, one boba at a time
               </p>
-            </div>
-
-            <div className="flex gap-4">
-              <a
-                href="#"
-                className="text-white hover:text-white transition-colors"
-              >
-                <Instagram size={20} />
-              </a>
-              <a
-                href="#"
-                className="text-white hover:text-white transition-colors"
-              >
-                <WhatsApp size={20} />
-              </a>
-              <a
-                href="#"
-                className="text-white hover:text-white transition-colors"
-              >
-                <TiktokIcon size={20} />
-              </a>
             </div>
           </div>
 
