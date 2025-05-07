@@ -136,7 +136,7 @@ export default function Home() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowPromo(false);
-    }, 20000); // 20 seconds
+    }, 10000); // 10 seconds
 
     return () => clearTimeout(timer);
   }, []);
