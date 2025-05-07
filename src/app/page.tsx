@@ -2,8 +2,8 @@
 
 import type React from "react";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import {
   Instagram,
@@ -11,6 +11,7 @@ import {
   ChevronDown,
   MapPin,
   Clock,
+  X,
 } from "lucide-react";
 import { InstagramIcon as BaseTiktokIcon } from "lucide-react";
 import { FaInstagram, FaWhatsapp, FaSnapchatGhost } from "react-icons/fa";
@@ -19,32 +20,32 @@ import { FaInstagram, FaWhatsapp, FaSnapchatGhost } from "react-icons/fa";
 const vendors = [
   {
     id: 1,
-    name: "Almonds Cafe",
-    description: "Classic milk teas with a twist",
+    name: "Almond Deserts",
+    description: "La-Bawaleshi Road, East Legon",
     locations: [
-      { name: "East Legon", price: 30 },
-      { name: "UPSA", price: 35 },
-      { name: "University of Ghana", price: 40 },
-      { name: "Adenta", price: 45 },
+      { name: "East Legon", price: 20 },
+      { name: "UPSA", price: 25 },
+      { name: "University of Ghana", price: 30 },
+      { name: "Adenta", price: 40 },
       { name: "Madina", price: 35 },
-      { name: "Haatso", price: 30 },
+      { name: "Haatso", price: 35 },
       { name: "North Legon", price: 35 },
-      { name: "Westland", price: 40 },
+      { name: "Westland", price: 35 },
     ],
     gradient: "from-[#E6D5C7] to-[#F5E6D3]",
   },
   {
     id: 2,
     name: "Boba Fie",
-    description: "Fruity flavors and chewy pearls",
+    description: "Garden Road, East Legon",
     locations: [
-      { name: "East Legon", price: 35 },
-      { name: "UPSA", price: 30 },
-      { name: "University of Ghana", price: 35 },
+      { name: "East Legon", price: 20 },
+      { name: "UPSA", price: 25 },
+      { name: "University of Ghana", price: 30 },
       { name: "Adenta", price: 40 },
-      { name: "Madina", price: 30 },
+      { name: "Madina", price: 35 },
       { name: "Haatso", price: 35 },
-      { name: "North Legon", price: 40 },
+      { name: "North Legon", price: 35 },
       { name: "Westland", price: 35 },
     ],
     gradient: "from-[#D4E4E7] to-[#E8F1F2]",
@@ -52,31 +53,31 @@ const vendors = [
   {
     id: 3,
     name: "Daddy Boba",
-    description: "Premium teas with artisanal toppings",
+    description: "Jungle Avenue, East Legon",
     locations: [
-      { name: "East Legon", price: 40 },
-      { name: "UPSA", price: 35 },
+      { name: "East Legon", price: 20 },
+      { name: "UPSA", price: 25 },
       { name: "University of Ghana", price: 30 },
-      { name: "Adenta", price: 45 },
+      { name: "Adenta", price: 40 },
       { name: "Madina", price: 35 },
-      { name: "Haatso", price: 40 },
+      { name: "Haatso", price: 35 },
       { name: "North Legon", price: 35 },
-      { name: "Westland", price: 30 },
+      { name: "Westland", price: 35 },
     ],
     gradient: "from-[#E8D3D1] to-[#F5E6E4]",
   },
   {
     id: 4,
     name: "Cafe De Boba",
-    description: "Innovative flavors and combinations",
+    description: "1st Blohum Road, Dzorwulu",
     locations: [
-      { name: "East Legon", price: 35 },
-      { name: "UPSA", price: 40 },
+      { name: "East Legon", price: 30 },
+      { name: "UPSA", price: 35 },
       { name: "University of Ghana", price: 35 },
-      { name: "Adenta", price: 30 },
+      { name: "Adenta", price: 45 },
       { name: "Madina", price: 40 },
-      { name: "Haatso", price: 35 },
-      { name: "North Legon", price: 30 },
+      { name: "Haatso", price: 30 },
+      { name: "North Legon", price: 35 },
       { name: "Westland", price: 35 },
     ],
     gradient: "from-[#D7E3D4] to-[#E8F1E6]",
@@ -84,11 +85,11 @@ const vendors = [
   {
     id: 5,
     name: "Fika Tea House",
-    description: "Organic ingredients, eco-friendly packaging",
+    description: "Cairo Street, East Legon",
     locations: [
-      { name: "East Legon", price: 30 },
-      { name: "UPSA", price: 35 },
-      { name: "University of Ghana", price: 40 },
+      { name: "East Legon", price: 20 },
+      { name: "UPSA", price: 25 },
+      { name: "University of Ghana", price: 30 },
       { name: "Adenta", price: 35 },
       { name: "Madina", price: 30 },
       { name: "Haatso", price: 35 },
@@ -100,16 +101,16 @@ const vendors = [
   {
     id: 6,
     name: "Mixmi",
-    description: "Aesthetic drinks for your feed",
+    description: "Agbogba-Ashongman Road, North Legon",
     locations: [
       { name: "East Legon", price: 35 },
       { name: "UPSA", price: 30 },
-      { name: "University of Ghana", price: 35 },
-      { name: "Adenta", price: 40 },
-      { name: "Madina", price: 35 },
-      { name: "Haatso", price: 30 },
-      { name: "North Legon", price: 35 },
-      { name: "Westland", price: 40 },
+      { name: "University of Ghana", price: 25 },
+      { name: "Adenta", price: 35 },
+      { name: "Madina", price: 25 },
+      { name: "Haatso", price: 25 },
+      { name: "North Legon", price: 20 },
+      { name: "Westland", price: 35 },
     ],
     gradient: "from-[#D5E6E3] to-[#E6F2F0]",
   },
@@ -130,9 +131,55 @@ function getInitials(name: string): string {
 export default function Home() {
   const [activeVendor, setActiveVendor] = useState<number | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showPromo, setShowPromo] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowPromo(false);
+    }, 20000); // 20 seconds
+
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
-    <div className="min-h-screen bg-[#f7f1ee] ">
+    <div className="min-h-screen bg-[#f7f1ee]">
+      <AnimatePresence>
+        {showPromo && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="bg-gradient-to-r from-[#5a3e2b] to-[#986d47] text-white p-6 md:p-8 rounded-2xl shadow-xl w-[90%] max-w-lg mx-auto"
+            >
+              <div className="flex flex-col items-center text-center">
+                <h3 className="font-baloo text-2xl md:text-4xl font-bold mb-3">
+                  Grand Opening Special! 🎉
+                </h3>
+                <p className="text-sm md:text-lg mb-6">
+                  Starting March 25th, enjoy flat rate delivery of ₵20 to all
+                  locations for the first 2 days!
+                </p>
+                <motion.button
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => setShowPromo(false)}
+                  className="bg-white text-[#5a3e2b] px-6 py-2.5 md:px-8 md:py-3 rounded-full font-medium text-base md:text-lg w-full md:w-auto"
+                >
+                  Got it!
+                </motion.button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Header */}
       <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md shadow-sm">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center p-2">
