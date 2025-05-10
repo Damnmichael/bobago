@@ -5,7 +5,16 @@ import type React from "react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { ChevronDown, MapPin, Clock } from "lucide-react";
+import {
+  ChevronDown,
+  MapPin,
+  X,
+  User,
+  Phone,
+  ShoppingBag,
+  Coffee,
+  Package,
+} from "lucide-react";
 
 import { FaInstagram, FaWhatsapp, FaSnapchatGhost } from "react-icons/fa";
 
@@ -109,8 +118,17 @@ const vendors = [
   },
 ];
 
-// Delivery times
-const deliveryTimes = ["12:00 PM", "4:00 PM", "8:00 PM"];
+// Add boba flavors
+const bobaFlavors = [
+  "Classic Milk Tea",
+  "Taro Milk Tea",
+  "Brown Sugar Milk Tea",
+  "Thai Milk Tea",
+  "Matcha Milk Tea",
+  "Honey Milk Tea",
+  "Wintermelon Milk Tea",
+  "Strawberry Milk Tea",
+];
 
 // Function to get initials from vendor name
 function getInitials(name: string): string {
@@ -125,6 +143,15 @@ export default function Home() {
   const [activeVendor, setActiveVendor] = useState<number | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showPromo, setShowPromo] = useState(true);
+  const [isOrderSheetOpen, setIsOrderSheetOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+    vendor: "",
+    flavor: "",
+    quantity: "1",
+    location: "East Legon", // Default location
+  });
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -133,6 +160,14 @@ export default function Home() {
 
     return () => clearTimeout(timer);
   }, []);
+
+  const handleOrderSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Here you would typically send the order to your backend
+    console.log("Order submitted:", formData);
+    // For now, we'll just close the sheet
+    setIsOrderSheetOpen(false);
+  };
 
   return (
     <div className="min-h-screen bg-[#f7f1ee]">
@@ -315,59 +350,45 @@ export default function Home() {
             </motion.div>
           ))}
         </div>
-      </section>
 
-      {/* Delivery Times Section */}
-      <section id="delivery" className="bg-[#f7f1ee] py-12 md:py-16">
-        <div className="container mx-auto px-4">
-          <SectionTitle>Delivery Times</SectionTitle>
+        {/* Delivery Locations Info */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="mt-12 bg-white rounded-2xl p-8 shadow-lg"
+        >
+          <div className="flex items-center gap-3 mb-6">
+            <MapPin className="text-[#5a3e2b]" size={24} />
+            <h3 className="text-2xl font-bold text-[#5a3e2b]">
+              Delivery Locations
+            </h3>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
-            className="mt-8 bg-white rounded-2xl p-8 shadow-lg"
-          >
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {deliveryTimes.map((time, index) => (
-                <motion.div
-                  key={index}
-                  whileHover={{ y: -5, scale: 1.02 }}
-                  className="bg-gradient-to-br from-[#f7f1ee] to-white rounded-xl p-6 shadow-md flex flex-col items-center border border-[#e6d5c7]"
-                >
-                  <div className="w-16 h-16 bg-[#5a3e2b] rounded-full flex items-center justify-center mb-4">
-                    <Clock className="text-white" size={28} />
-                  </div>
-                  <h3 className="text-2xl font-bold text-[#5a3e2b]">{time}</h3>
-                  <p className="text-[#986d47] text-center mt-2 font-medium">
-                    {index === 0
-                      ? "Morning Delivery"
-                      : index === 1
-                      ? "Afternoon Delivery"
-                      : "Evening Delivery"}
-                  </p>
-                </motion.div>
-              ))}
-            </div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="mt-8 bg-gradient-to-r from-[#5a3e2b] to-[#986d47] rounded-xl p-6 shadow-lg"
-            >
-              <div className="flex items-center justify-center gap-3">
-                <Clock className="text-white" size={24} />
-                <p className="text-center text-white text-lg">
-                  <span className="font-bold">Pro Tip:</span> Order at least 1
-                  hour before your chosen time to ensure timely delivery
-                </p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {vendors[0].locations.map((location, index) => (
+              <div
+                key={index}
+                className="flex items-center gap-2 p-3 bg-[#f7f1ee] rounded-lg"
+              >
+                <div className="w-2 h-2 rounded-full bg-[#986d47]"></div>
+                <span className="text-[#5a3e2b] font-medium">
+                  {location.name}
+                </span>
               </div>
-            </motion.div>
-          </motion.div>
-        </div>
+            ))}
+          </div>
+
+          <div className="mt-6 p-4 bg-gradient-to-r from-[#5a3e2b] to-[#986d47] rounded-xl text-white">
+            <p className="text-center">
+              We deliver to all these locations with a flat rate of ₵20 during
+              our grand opening!
+              <br className="hidden md:block" />
+              Regular delivery rates will apply after the promotional period.
+            </p>
+          </div>
+        </motion.div>
       </section>
 
       {/* Contact Section */}
@@ -376,36 +397,99 @@ export default function Home() {
 
         <div className="mt-8 max-w-2xl mx-auto">
           <p className="text-center text-gray-600 mb-8">
-            Reach out to us on social media to place your order or ask any
-            questions!
+            Ready to enjoy your favorite boba? Click below to place your order!
           </p>
 
-          <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6 w-full max-w-md mx-auto">
-            <SocialButton
-              icon={<FaInstagram size={24} />}
-              color="bg-[#5a3e2b]"
-              href="https://instagram.com/bobagodelivery"
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="flex justify-center"
+          >
+            <motion.button
+              onClick={() => setIsOrderSheetOpen(true)}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="inline-block bg-gradient-to-r from-[#5a3e2b] to-[#986d47] text-white font-medium py-4 px-12 rounded-full shadow-lg hover:shadow-xl transition-all text-lg"
             >
-              @bobagodelivery
-            </SocialButton>
-
-            <SocialButton
-              icon={<FaSnapchatGhost size={24} />}
-              color="bg-[#5a3e2b]"
-              href="https://snapchat.com/add/bobagodelivery"
-            >
-              @bobagodelivery
-            </SocialButton>
-            <SocialButton
-              icon={<FaWhatsapp size={24} />}
-              color="bg-[#5a3e2b]"
-              href="https://wa.me/233543940135"
-            >
-              +233 54 394 0135
-            </SocialButton>
-          </div>
+              Order Now
+            </motion.button>
+          </motion.div>
         </div>
       </section>
+
+      {/* Order Sheet */}
+      <AnimatePresence>
+        {isOrderSheetOpen && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsOrderSheetOpen(false)}
+              className="fixed inset-0 bg-black/50 z-50"
+            />
+
+            {/* Mobile Bottom Sheet */}
+            <motion.div
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="fixed inset-x-0 bottom-0 z-50 md:hidden"
+            >
+              <div className="bg-white rounded-t-3xl p-6 max-h-[90vh] overflow-y-auto">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-2xl font-bold text-[#5a3e2b]">
+                    Place Your Order
+                  </h2>
+                  <button
+                    onClick={() => setIsOrderSheetOpen(false)}
+                    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                  >
+                    <X size={24} className="text-gray-500" />
+                  </button>
+                </div>
+                <OrderForm
+                  formData={formData}
+                  setFormData={setFormData}
+                  onSubmit={handleOrderSubmit}
+                />
+              </div>
+            </motion.div>
+
+            {/* Desktop Side Sheet */}
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="fixed top-0 right-0 h-full w-full max-w-md z-50 hidden md:block"
+            >
+              <div className="bg-white h-full shadow-xl p-8 overflow-y-auto">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-2xl font-bold text-[#5a3e2b]">
+                    Place Your Order
+                  </h2>
+                  <button
+                    onClick={() => setIsOrderSheetOpen(false)}
+                    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                  >
+                    <X size={24} className="text-gray-500" />
+                  </button>
+                </div>
+                <OrderForm
+                  formData={formData}
+                  setFormData={setFormData}
+                  onSubmit={handleOrderSubmit}
+                />
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* Footer */}
       <footer className="bg-[#5a3e2b] text-white py-8">
@@ -416,6 +500,36 @@ export default function Home() {
               <p className="text-white text-sm mt-1">
                 Delivering happiness, one boba at a time
               </p>
+            </div>
+
+            <div className="flex gap-4">
+              <motion.a
+                href="https://instagram.com/bobagodelivery"
+                whileHover={{ y: -3 }}
+                className="text-white hover:text-[#e6d5c7] transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FaInstagram size={24} />
+              </motion.a>
+              <motion.a
+                href="https://snapchat.com/add/bobagodelivery"
+                whileHover={{ y: -3 }}
+                className="text-white hover:text-[#e6d5c7] transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FaSnapchatGhost size={24} />
+              </motion.a>
+              <motion.a
+                href="https://wa.me/233543940135"
+                whileHover={{ y: -3 }}
+                className="text-white hover:text-[#e6d5c7] transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FaWhatsapp size={24} />
+              </motion.a>
             </div>
           </div>
 
@@ -465,8 +579,6 @@ function NavLink({
 // Component for vendor cards
 function VendorCard({
   vendor,
-  isActive,
-  onClick,
 }: {
   vendor: (typeof vendors)[0];
   isActive: boolean;
@@ -490,68 +602,225 @@ function VendorCard({
 
       <div className="p-5">
         <h3 className="text-xl font-bold mb-1 text-[#5a3e2b]">{vendor.name}</h3>
-        <p className="text-gray-600 text-sm mb-3">{vendor.description}</p>
-
-        <div
-          onClick={onClick}
-          className="flex items-center gap-1 text-[#986d47] text-sm font-medium cursor-pointer"
-        >
-          <MapPin size={16} />
-          <span>Delivery locations</span>
-          <ChevronDown
-            size={16}
-            className={`transition-transform ${isActive ? "rotate-180" : ""}`}
-          />
-        </div>
-
-        {isActive && (
-          <div className="mt-3 pt-3 border-t">
-            <ul className="space-y-2">
-              {vendor.locations.map((location, index) => (
-                <li
-                  key={index}
-                  className="flex items-center justify-between text-sm text-gray-600"
-                >
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-[#986d47]"></div>
-                    {location.name}
-                  </div>
-                  <div
-                    className={`px-2 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r ${vendor.gradient} text-[#5a3e2b]`}
-                  >
-                    ₵{location.price}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+        <p className="text-gray-600 text-sm">{vendor.description}</p>
       </div>
     </div>
   );
 }
 
-// Component for social media buttons
-function SocialButton({
-  icon,
-  color,
-  children,
-  href = "#",
+// Add OrderForm component
+function OrderForm({
+  formData,
+  setFormData,
+  onSubmit,
 }: {
-  icon: React.ReactNode;
-  color: string;
-  children: React.ReactNode;
-  href?: string;
+  formData: {
+    name: string;
+    phone: string;
+    vendor: string;
+    flavor: string;
+    quantity: string;
+    location: string;
+  };
+  setFormData: React.Dispatch<
+    React.SetStateAction<{
+      name: string;
+      phone: string;
+      vendor: string;
+      flavor: string;
+      quantity: string;
+      location: string;
+    }>
+  >;
+  onSubmit: (e: React.FormEvent) => void;
 }) {
   return (
-    <motion.a
-      href={href}
-      whileHover={{ y: -5 }}
-      whileTap={{ scale: 0.95 }}
-      className={`${color} text-white px-5 py-3 rounded-full flex items-center justify-center gap-2 shadow-lg w-full sm:w-auto`}
-    >
-      {icon}
-      <span className="whitespace-nowrap">{children}</span>
-    </motion.a>
+    <form onSubmit={onSubmit} className="space-y-6">
+      {/* Name Input */}
+      <div className="space-y-2">
+        <label className="block text-[#5a3e2b] font-medium">Your Name</label>
+        <div className="relative">
+          <User
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            size={20}
+          />
+          <input
+            type="text"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            placeholder="Enter your name"
+            required
+            className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-[#986d47] focus:ring-2 focus:ring-[#986d47]/20 outline-none transition-all text-gray-800 placeholder-gray-400"
+          />
+        </div>
+      </div>
+
+      {/* Phone Input */}
+      <div className="space-y-2">
+        <label className="block text-[#5a3e2b] font-medium">Phone Number</label>
+        <div className="relative">
+          <Phone
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            size={20}
+          />
+          <input
+            type="tel"
+            value={formData.phone}
+            onChange={(e) =>
+              setFormData({ ...formData, phone: e.target.value })
+            }
+            placeholder="Enter your phone number"
+            required
+            className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-[#986d47] focus:ring-2 focus:ring-[#986d47]/20 outline-none transition-all text-gray-800 placeholder-gray-400"
+          />
+        </div>
+      </div>
+
+      {/* Vendor Selection */}
+      <div className="space-y-2">
+        <label className="block text-[#5a3e2b] font-medium">
+          Select Vendor
+        </label>
+        <div className="relative">
+          <ShoppingBag
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            size={20}
+          />
+          <select
+            value={formData.vendor}
+            onChange={(e) =>
+              setFormData({ ...formData, vendor: e.target.value })
+            }
+            required
+            className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-[#986d47] focus:ring-2 focus:ring-[#986d47]/20 outline-none transition-all appearance-none bg-white text-gray-800"
+          >
+            <option value="" className="text-gray-400">
+              Select a vendor
+            </option>
+            {vendors.map((vendor) => (
+              <option
+                key={vendor.id}
+                value={vendor.name}
+                className="text-gray-800"
+              >
+                {vendor.name}
+              </option>
+            ))}
+          </select>
+          <ChevronDown
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            size={20}
+          />
+        </div>
+      </div>
+
+      {/* Flavor Selection */}
+      <div className="space-y-2">
+        <label className="block text-[#5a3e2b] font-medium">
+          Select Flavor
+        </label>
+        <div className="relative">
+          <Coffee
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            size={20}
+          />
+          <select
+            value={formData.flavor}
+            onChange={(e) =>
+              setFormData({ ...formData, flavor: e.target.value })
+            }
+            required
+            className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-[#986d47] focus:ring-2 focus:ring-[#986d47]/20 outline-none transition-all appearance-none bg-white text-gray-800"
+          >
+            <option value="" className="text-gray-400">
+              Select a flavor
+            </option>
+            {bobaFlavors.map((flavor) => (
+              <option key={flavor} value={flavor} className="text-gray-800">
+                {flavor}
+              </option>
+            ))}
+          </select>
+          <ChevronDown
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            size={20}
+          />
+        </div>
+      </div>
+
+      {/* Quantity Selection */}
+      <div className="space-y-2">
+        <label className="block text-[#5a3e2b] font-medium">Quantity</label>
+        <div className="relative">
+          <Package
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            size={20}
+          />
+          <select
+            value={formData.quantity}
+            onChange={(e) =>
+              setFormData({ ...formData, quantity: e.target.value })
+            }
+            required
+            className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-[#986d47] focus:ring-2 focus:ring-[#986d47]/20 outline-none transition-all appearance-none bg-white text-gray-800"
+          >
+            {[1, 2, 3, 4, 5].map((num) => (
+              <option key={num} value={num} className="text-gray-800">
+                {num}
+              </option>
+            ))}
+          </select>
+          <ChevronDown
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            size={20}
+          />
+        </div>
+      </div>
+
+      {/* Location Selection */}
+      <div className="space-y-2">
+        <label className="block text-[#5a3e2b] font-medium">
+          Delivery Location
+        </label>
+        <div className="relative">
+          <MapPin
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            size={20}
+          />
+          <select
+            value={formData.location}
+            onChange={(e) =>
+              setFormData({ ...formData, location: e.target.value })
+            }
+            required
+            className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-[#986d47] focus:ring-2 focus:ring-[#986d47]/20 outline-none transition-all appearance-none bg-white text-gray-800"
+          >
+            {vendors[0].locations.map((location) => (
+              <option
+                key={location.name}
+                value={location.name}
+                className="text-gray-800"
+              >
+                {location.name}
+              </option>
+            ))}
+          </select>
+          <ChevronDown
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            size={20}
+          />
+        </div>
+      </div>
+
+      {/* Submit Button */}
+      <motion.button
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        type="submit"
+        className="w-full bg-gradient-to-r from-[#5a3e2b] to-[#986d47] text-white py-4 rounded-xl font-medium text-lg shadow-lg hover:shadow-xl transition-all"
+      >
+        Place Order
+      </motion.button>
+    </form>
   );
 }
