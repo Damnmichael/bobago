@@ -7,7 +7,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import {
   ChevronDown,
-  MapPin,
   X,
   User,
   Phone,
@@ -150,7 +149,7 @@ export default function Home() {
     vendor: "",
     flavor: "",
     quantity: "1",
-    location: "East Legon", // Default location
+    location: "", // start empty
   });
 
   useEffect(() => {
@@ -350,45 +349,6 @@ export default function Home() {
             </motion.div>
           ))}
         </div>
-
-        {/* Delivery Locations Info */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="mt-12 bg-white rounded-2xl p-8 shadow-lg"
-        >
-          <div className="flex items-center gap-3 mb-6">
-            <MapPin className="text-[#5a3e2b]" size={24} />
-            <h3 className="text-2xl font-bold text-[#5a3e2b]">
-              Delivery Locations
-            </h3>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {vendors[0].locations.map((location, index) => (
-              <div
-                key={index}
-                className="flex items-center gap-2 p-3 bg-[#f7f1ee] rounded-lg"
-              >
-                <div className="w-2 h-2 rounded-full bg-[#986d47]"></div>
-                <span className="text-[#5a3e2b] font-medium">
-                  {location.name}
-                </span>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-6 p-4 bg-gradient-to-r from-[#5a3e2b] to-[#986d47] rounded-xl text-white">
-            <p className="text-center">
-              We deliver to all these locations with a flat rate of ₵20 during
-              our grand opening!
-              <br className="hidden md:block" />
-              Regular delivery rates will apply after the promotional period.
-            </p>
-          </div>
-        </motion.div>
       </section>
 
       {/* Contact Section */}
@@ -634,6 +594,38 @@ function OrderForm({
   >;
   onSubmit: (e: React.FormEvent) => void;
 }) {
+  const [geoLoading, setGeoLoading] = useState(false);
+  const [geoError, setGeoError] = useState<string | null>(null);
+
+  const handleUseCurrentLocation = () => {
+    setGeoError(null);
+    if (!("geolocation" in navigator)) {
+      setGeoError("Geolocation is not supported by your browser.");
+      return;
+    }
+
+    setGeoLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        const coords = `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+        setFormData((prev) => ({ ...prev, location: coords }));
+        setGeoLoading(false);
+      },
+      (err) => {
+        setGeoLoading(false);
+        if (err.code === err.PERMISSION_DENIED) {
+          setGeoError(
+            "Permission denied. Please allow location access and try again."
+          );
+        } else {
+          setGeoError("Unable to fetch location. Please try again.");
+        }
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
+  };
+
   return (
     <form onSubmit={onSubmit} className="space-y-6">
       {/* Name Input */}
@@ -777,38 +769,45 @@ function OrderForm({
         </div>
       </div>
 
-      {/* Location Selection */}
+      {/* Location with Current Location Only */}
       <div className="space-y-2">
         <label className="block text-[#5a3e2b] font-medium">
           Delivery Location
         </label>
-        <div className="relative">
-          <MapPin
-            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-            size={20}
-          />
-          <select
+        <div className="flex items-center gap-3">
+          <input
+            type="text"
             value={formData.location}
             onChange={(e) =>
               setFormData({ ...formData, location: e.target.value })
             }
-            required
-            className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-[#986d47] focus:ring-2 focus:ring-[#986d47]/20 outline-none transition-all appearance-none bg-white text-gray-800"
-          >
-            {vendors[0].locations.map((location) => (
-              <option
-                key={location.name}
-                value={location.name}
-                className="text-gray-800"
-              >
-                {location.name}
-              </option>
-            ))}
-          </select>
-          <ChevronDown
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-            size={20}
+            placeholder="Paste coordinates e.g. 5.603717, -0.186964"
+            className="flex-1 px-3 py-3 rounded-lg border border-gray-200 text-gray-800 placeholder-gray-400"
           />
+          <button
+            type="button"
+            onClick={handleUseCurrentLocation}
+            className="bg-[#5a3e2b] text-white text-sm px-4 py-3 rounded-lg disabled:opacity-60"
+            disabled={geoLoading}
+          >
+            {geoLoading ? "Locating..." : "Use my current location"}
+          </button>
+        </div>
+        {geoError && <p className="text-sm text-red-600">{geoError}</p>}
+        {!geoError &&
+          formData.location &&
+          /\d,\s?-?\d/.test(formData.location) && (
+            <p className="text-sm text-gray-500">
+              Coordinates detected. You can edit this if you are ordering for
+              someone.
+            </p>
+          )}
+        <div className="mt-3 rounded-xl bg-[#f7f1ee] p-3 text-sm text-[#5a3e2b]">
+          <p className="leading-relaxed">
+            Ordering for someone? Ask them for their location coordinates and
+            paste it here. We’re working to support location names soon. Sorry
+            for the inconvenience.
+          </p>
         </div>
       </div>
 
