@@ -13,6 +13,7 @@ import {
   ShoppingBag,
   Coffee,
   Package,
+  ArrowDown,
 } from "lucide-react";
 
 import { FaInstagram, FaWhatsapp, FaSnapchatGhost } from "react-icons/fa";
@@ -290,14 +291,26 @@ export default function Home() {
               </span>
               delivered right to your doorstep.
             </p>
-            <motion.a
-              href="#contact"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="inline-block bg-[#5a3e2b] text-white font-medium py-2 md:py-3 px-6 md:px-8 rounded-full shadow-lg hover:shadow-xl transition-all text-sm md:text-base"
+            <motion.button
+              onClick={() => {
+                document.getElementById("contact")?.scrollIntoView({
+                  behavior: "smooth",
+                });
+              }}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              animate={{ y: [0, 10, 0] }}
+              transition={{
+                y: {
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                },
+              }}
+              className="inline-block bg-[#5a3e2b] text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all"
             >
-              Order Now
-            </motion.a>
+              <ArrowDown size={24} />
+            </motion.button>
           </motion.div>
 
           <motion.div
